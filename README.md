@@ -1,9 +1,13 @@
-# Fast square and multiply modular exponentiation
+# Fast square and multiply modular exponentiation (FSMMAE)
+
+## Abstract
 
 Modular exponentiation: (a^b) mod n can be computed using square and multiply
-exponentiation. The present algorythm in this repository describes a faster variant.
+exponentiation algorythm[^1].
+The present algorythm in this repository describes a faster variant stopping the
+computation when intermediary modulus is 0.
 
-## Various observations
+## Observations
 
 ### The modulus of a number by a number that begins with a number it begins with is the same as the modulus of the number by the number it ends with
 
@@ -14,7 +18,9 @@ exponentiation. The present algorythm in this repository describes a faster vari
 The number begins 25, so the modulus of 2555 by 25 is the same as the modulus of 55 by 25.
 Both are 5.
 
-#### Why ?
+![Why](question-mark-on-a-blank-background.png)
+
+#### Why?
 
 Because `2555 = 25 * 100 + 55` and modulus of `25 * 100 by 25 is 0`, so the modulus
 of 2555 by 25 is the same as the modulus of 55 by 25.
@@ -67,10 +73,12 @@ long integer tested.
 
 ## Hypothesis
 
-The FSMA algorithm is generally faster than the SMA algorithm because of the computation ending
+The FSMMEA algorithm is generally faster than the SMA algorithm because of the computation ending
 sooner in case a temporary modulus is equal to 0.
 The impact of storing the last modulus and comparing the current to 0 is negligible.
 
 ### Performance analysis
 
 Ongoing
+
+[^1]: Christof Paar, Jan Pelzl, Understanding Cryptography, section 7.4
