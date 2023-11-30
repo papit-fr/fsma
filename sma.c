@@ -9,7 +9,7 @@ But with small fixes and coding style improvement
 	Christophe Brun
 
 @copyright:
-	2023, PapTI SASU
+	2023, PapIT SASU
 
 as seen on section 7.4 of Understanding Cryptography:
 
