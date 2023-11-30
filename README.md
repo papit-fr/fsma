@@ -42,7 +42,7 @@ the algorithm can return the last modulus stored.
 For a portable implementation, C is used to test than new implementation.
 The classic square and multiply modular exponentiation is implemented in `sma.c`.
 The fast square and multiply modular exponentiation is implemented in `fsma.c`.
-The reference implementation is `pow` built-in method [Python](https://docs.python.org/3/library/functions.html#pow).
+The reference implementation is [`pow` Python built-in method](https://docs.python.org/3/library/functions.html#pow).
 
 ### Dependencies
 
