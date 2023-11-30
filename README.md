@@ -25,7 +25,7 @@ Both are 5.
 Because `2555 = 25 * 100 + 55` and modulus of `25 * 100 by 25 is 0`, so the modulus
 of 2555 by 25 is the same as the modulus of 55 by 25.
 
-### A generalization of the previous observation is that a modulus of a number is equal to the modulus of this number another number which modulus is equal to 0
+### A generalization of the previous observation is that a modulus of a number is equal to the modulus of this number plus another number which modulus is equal to 0
 
 ```
 5055 mod 25 = 55 mod 25
