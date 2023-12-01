@@ -1,6 +1,6 @@
 import ctypes
 
-lib = ctypes.CDLL("./sma.so")
+lib = ctypes.CDLL("./libsma.so")
 sma = lib.sma
 sma.argtypes = [ctypes.c_ulonglong, ctypes.c_ulonglong, ctypes.c_ulonglong]
 sma.restype = ctypes.c_ulonglong

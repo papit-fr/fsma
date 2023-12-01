@@ -1,6 +1,6 @@
 import ctypes
 
-lib = ctypes.CDLL("./fsma.so")
+lib = ctypes.CDLL("./libfsma.so")
 fsma = lib.fsma
 fsma.argtypes = [ctypes.c_ulonglong, ctypes.c_ulonglong, ctypes.c_ulonglong]
 fsma.restype = ctypes.c_ulonglong

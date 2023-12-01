@@ -55,7 +55,7 @@ to be loaded using Python for testing purposes.
 The compilation is done using the following command:
 
 ```bash
-sh ./build.sh
+make all
 ```
 
 ### Testing
