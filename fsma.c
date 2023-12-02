@@ -7,10 +7,6 @@ result is zero.
 
 Return sooner surely means faster.
 
-The SMA was largely inspired from https://github.com/PhilCR/Cryptography-Square-and-Multiply-modular-Exponentiation
-written by Jonathan André Gangi and Philippe Cesar Ramos.
-But with small fixes and coding style improvement
-
 @author:
 	Christophe Brun
 
@@ -22,7 +18,7 @@ as seen on section 7.4 of Understanding Cryptography:
 	Square-and-Multiply for Modular Exponentiation
 
 	Input:  base element x, Exponent H, Modulus n
-	Output: Y = xˆH mod n
+	Output: y = xˆh mod n
 	Initialization: r = x
 
 	Algorithm:
@@ -41,68 +37,31 @@ and specified by:
 	Output: one integers Y, as result from its exponentiation
 
 */
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-unsigned long fsma(
-	unsigned long x, unsigned long h, unsigned long n)
+unsigned long fsma(unsigned long b, unsigned long exp, unsigned long m)
 {
+	unsigned long res = 1;
 
-	unsigned long r;
-	unsigned long b; // A buffer saving the previous r
-	int bin[32];
-	int i;
-
-	r = x;
-	i = 0;
-
-	/* Converts H in Binary */
-	while (h > 0)
+	while (exp > 1)
 	{
+		unsigned long buf = res;
 
-		if (h % 2 == 0)
+		if (exp & 1)
 		{
-			bin[i] = 0;
-		}
-		else
-		{
-			bin[i] = 1;
-		}
+			res = (res * b) % m;
 
-		h = h / 2;
-		i++;
-	}
-
-	i--; // t-1
-	// Boolean flag, after first scare, it will be true
-	bool square = false;
-	while (i > 0)
-	{
-		b = r;
-		r = (r * r) % n;
-		if (r == 0)
-		{
-			if (square == true)
+			if (res == 0)
 			{
-				return b;
-			}
-			// first square, so it is not possible to return
-			return 0;
-		}
-		else
-		{
-			if (bin[--i] == 1)
-			{
-				b = r;
-				r = (r * x) % n;
-				// Cannot return here with b, it is always done above
+				return (b * buf) % m;
 			}
 		}
-		square = true;
+
+		b = (b * b) % m;
+		exp >>= 1;
 	}
 
-	return r;
+	return (b * res) % m;
 }
 
 int main()
@@ -112,8 +71,16 @@ int main()
 
 	unsigned long y; // output
 
-	scanf("%ld %ld %ld\n", &x, &k, &n); // reading
+	int input_counter; // return code
 
+	input_counter = scanf("%ld %ld %ld\n", &x, &k, &n); // reading
+
+	if (input_counter != 3)
+	{
+		fprintf(
+			stderr, "Error: invalid input, must be 3, base, exponent and modulo\n");
+		exit(EXIT_FAILURE);
+	}
 	y = fsma(x, k, n); // Square-and-Multiply modular Exponentiation
 
 	printf("%ld\n", y);

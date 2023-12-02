@@ -37,16 +37,25 @@ Yes, using the square and multiply modular exponentiation algorythm and storing
 the last modulus. If the current one is equal to 0, the computation can stop, and
 the algorithm can return the last modulus stored.
 
+## Python implementation
+
+Prototyping is done in Python for the ease of development and testing.
+The corresponding module is `pysma.py`.
+The reference implementation is [`pow` Python built-in method](https://docs.python.org/3/library/functions.html#pow).
+
 ## C implementation
 
-For a portable implementation, C is used to test than new implementation.
+For a portable implementation and low-level profiling of the executables,
+C is used to test than new implementation.
+It is a transpile of the Python code.
 The classic square and multiply modular exponentiation is implemented in `sma.c`.
 The fast square and multiply modular exponentiation is implemented in `fsma.c`.
-The reference implementation is [`pow` Python built-in method](https://docs.python.org/3/library/functions.html#pow).
+Again the reference implementation
+is [`pow` Python built-in method](https://docs.python.org/3/library/functions.html#pow).
 
 ### Dependencies
 
-Compilation and tests need LLVM, Bash, Clang and Python3.
+Compilation and tests need LLVM, cmake, Clang and Python3.
 
 ### Compilation
 
