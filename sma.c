@@ -39,7 +39,7 @@ and specified by:
 #include <stdio.h>
 #include <stdlib.h>
 
-unsigned long sma(unsigned long b, unsigned long exp, unsigned long m)
+unsigned long sma(unsigned long base, unsigned long exp, unsigned long mod)
 {
 	unsigned long res = 1;
 
@@ -47,25 +47,25 @@ unsigned long sma(unsigned long b, unsigned long exp, unsigned long m)
 	{
 		if (exp & 1)
 		{
-			res = (res * b) % m;
+			res = (res * base) % mod;
 		}
-		b = (b * b) % m;
+		base = (base * base) % mod;
 		exp >>= 1;
 	}
 
-	return (b * res) % m;
+	return (base * res) % mod;
 }
 
 int main()
 {
 
-	unsigned long x, k, n; // input
+	unsigned long base, exp, mod; // input
 
-	unsigned long y; // output
+	unsigned long x; // output
 
-	int input_counter; // return code
+	int input_counter; // number of input read
 
-	input_counter = scanf("%ld %ld %ld\n", &x, &k, &n); // reading
+	input_counter = scanf("%ld %ld %ld\n", &base, &exp, &mod); // reading
 
 	if (input_counter != 3)
 	{
@@ -73,9 +73,9 @@ int main()
 			stderr, "Error: invalid input, must be 3, base, exponent and modulo\n");
 		exit(EXIT_FAILURE);
 	}
-	y = sma(x, k, n); // Square-and-Multiply modular Exponentiation
+	x = sma(base, exp, mod); // Square-and-Multiply modular Exponentiation
 
-	printf("%ld\n", y);
+	printf("%ld\n", x);
 
 	return 0;
 }
