@@ -20,7 +20,7 @@ def test_function(callable_function):
     """
     # From 2 to the max the C unsigned long can hold
     logging.info("Testing function starting...")
-    for c_integer in range(2, MAX_C_UNSIGNED_LONG, 3000):
+    for c_integer in range(20, MAX_C_UNSIGNED_LONG, 1):
         assert pow(c_integer, EXPONENT, MODULO) == callable_function(
             c_integer, EXPONENT, MODULO
         ), f"{c_integer} ** {EXPONENT} % {MODULO} != {callable_function(c_integer, EXPONENT, MODULO)}"
