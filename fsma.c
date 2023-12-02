@@ -31,11 +31,6 @@ as seen on section 7.4 of Understanding Cryptography:
 
 		RETURN (r)
 
-and specified by:
-<http://www.moodle.ufscar.br/file.php/4783/Aulas/Aula06/Atividades_sobre_a_teoria_dos_numeros.pdf>
-	Input: three integers X, k, N, being 2 <= X, k, N < 2ˆ32.
-	Output: one integers Y, as result from its exponentiation
-
 */
 #include <stdio.h>
 #include <stdlib.h>
