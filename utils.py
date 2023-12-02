@@ -9,7 +9,7 @@ logging.basicConfig(
 MAX_C_UNSIGNED_LONG = 4294967295
 # Test suite template
 BASE = 970397
-EXPONENT = 987
+EXPONENT = 98725745
 MODULO = 98
 
 

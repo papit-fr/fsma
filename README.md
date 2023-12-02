@@ -55,7 +55,7 @@ is [`pow` Python built-in method](https://docs.python.org/3/library/functions.ht
 
 ### Dependencies
 
-Compilation and tests need LLVM, cmake, Clang and Python3.
+Compilation and tests need LLVM, cmake, Clang/cc/gcc or any compiler, Valgrind and Python3.
 
 ### Compilation
 
@@ -64,7 +64,7 @@ to be loaded using Python for testing purposes.
 The compilation is done using the following command:
 
 ```bash
-make all
+$ make all
 ```
 
 ### Testing
@@ -88,6 +88,69 @@ The impact of storing the last modulus and comparing the current to 0 is negligi
 
 ### Performance analysis
 
-Ongoing
+#### Counting instructions using Valgrind
+
+Has expected, comparing the temporary remainder to 0 has a cost. When no intermediate
+remainder is 0, the computing function itself execute 20% more instructions.
+In this case the percentage is constant.
+
+The classic implementation counts 567 instructions:
+
+```bash
+$ valgrind --tool=callgrind --toggle-collect=sma ./sma-prof <<<"97032574325492 4294965003 3536"
+==1559769== Callgrind, a call-graph generating cache profiler
+==1559769== Copyright (C) 2002-2017, and GNU GPL'd, by Josef Weidendorfer et al.
+==1559769== Using Valgrind-3.19.0 and LibVEX; rerun with -h for copyright info
+==1559769== Command: ./sma-prof
+==1559769== 
+==1559769== For interactive control, run 'callgrind_control -h'.
+1040
+==1559769== 
+==1559769== Events    : Ir
+==1559769== Collected : 567
+==1559769== 
+==1559769== I   refs:      567
+```
+
+The currently described implementation counts 679 instructions:
+
+```bash
+$ valgrind --tool=callgrind --toggle-collect=fsma ./fsma-prof <<<"97032574325492 4294965003 3536"
+...
+==1559866== I   refs:      679
+```
+
+When there is an intermediary remainder equal to 0, the number of instructions
+is reduced by proportion that changes depending on the number of square and multiply
+left to compute.
+Here above an example with an 82% decrease of the number of instructions executed.
+
+The classical implementation counts 457 instructions:
+
+```bash
+$ valgrind --tool=callgrind --toggle-collect=sma ./sma-prof <<<"294 98725745 98"
+...
+==1577575== Events    : Ir
+==1577575== Collected : 457
+==1577575== 
+==1577575== I   refs:      457
+```
+
+The currently described implementation counts 84 instructions:
+
+```bash
+$ valgrind --tool=callgrind --toggle-collect=fsma ./fsma-prof <<<"294 98725745 98"
+...
+==1577460== Events    : Ir
+==1577460== Collected : 84
+==1577460== 
+==1577460== I   refs:      84
+```
+
+The proportion of instructions executed is not constant and the chance of having
+an intermediary remainder equal to 0 is not constant either. It surely increases
+with the number of square and multiply to compute.
+To measure those phenomenons, the C is not adapted. A more high-level language
+like Python with it data science tools is needed.
 
 [^1]: Christof Paar, Jan Pelzl, Understanding Cryptography, section 7.4
