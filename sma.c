@@ -30,8 +30,8 @@ as seen on section 7.4 of Understanding Cryptography:
 #include <stdio.h>
 #include <stdlib.h>
 
-unsigned long sma(unsigned long base, unsigned long exp, unsigned long mod) {
-    unsigned long res = 1;
+unsigned long long sma(unsigned long long base, unsigned long long exp, unsigned long long mod) {
+    unsigned long long res = 1;
 
     while (exp > 1) {
         if (exp & 1) {
@@ -46,13 +46,13 @@ unsigned long sma(unsigned long base, unsigned long exp, unsigned long mod) {
 
 int main() {
 
-    unsigned long base, exp, mod; // input
+    unsigned long long base, exp, mod; // input
 
-    unsigned long x; // output
+    unsigned long long x; // output
 
     int input_counter; // number of input read
 
-    input_counter = scanf("%ld %ld %ld\n", &base, &exp, &mod); // reading
+    input_counter = scanf("%llu %llu %llu\n", &base, &exp, &mod); // reading
 
     if (input_counter != 3) {
         fprintf(
@@ -61,7 +61,7 @@ int main() {
     }
     x = sma(base, exp, mod); // Square-and-Multiply modular Exponentiation
 
-    printf("%ld\n", x);
+    printf("%llu\n", x);
 
     return 0;
 }
