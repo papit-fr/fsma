@@ -34,51 +34,46 @@ as seen on section 7.4 of Understanding Cryptography:
 */
 #include <stdio.h>
 #include <stdlib.h>
-unsigned long fsma(unsigned long base, unsigned long exp, unsigned long mod)
-{
-	unsigned long res = 1;
 
-	while (exp > 1)
-	{
-		unsigned long buf = res;
+unsigned long fsma(unsigned long base, unsigned long exp, unsigned long mod) {
+    unsigned long res = 1;
 
-		if (exp & 1)
-		{
-			res = (res * base) % mod;
+    while (exp > 1) {
+        unsigned long buf = res;
 
-			if (res == 0)
-			{
-				return (base * buf) % mod;
-			}
-		}
+        if (exp & 1) {
+            res = (res * base) % mod;
 
-		base = (base * base) % mod;
-		exp >>= 1;
-	}
+            if (res == 0) {
+                return (base * buf) % mod;
+            }
+        }
 
-	return (base * res) % mod;
+        base = (base * base) % mod;
+        exp >>= 1;
+    }
+
+    return (base * res) % mod;
 }
 
-int main()
-{
+int main() {
 
-	unsigned long base, exp, mod; // input
+    unsigned long base, exp, mod; // input
 
-	unsigned long x; // output
+    unsigned long x; // output
 
-	int input_counter; // number of input read
+    int input_counter; // number of input read
 
-	input_counter = scanf("%ld %ld %ld\n", &base, &exp, &mod); // reading
+    input_counter = scanf("%ld %ld %ld\n", &base, &exp, &mod); // reading
 
-	if (input_counter != 3)
-	{
-		fprintf(
-			stderr, "Error: invalid input, must be 3, base, exponent and modulo\n");
-		exit(EXIT_FAILURE);
-	}
-	x = fsma(base, exp, mod); // Square-and-Multiply modular Exponentiation
+    if (input_counter != 3) {
+        fprintf(
+                stderr, "Error: invalid input, must be 3, base, exponent and modulo\n");
+        exit(EXIT_FAILURE);
+    }
+    x = fsma(base, exp, mod); // Square-and-Multiply modular Exponentiation
 
-	printf("%ld\n", x);
+    printf("%ld\n", x);
 
-	return 0;
+    return 0;
 }
