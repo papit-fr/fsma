@@ -29,9 +29,11 @@ as seen on section 7.4 of Understanding Cryptography:
 
 #include <stdio.h>
 #include <stdlib.h>
+// include stdint.h for standard width integer
+#include <stdint.h>
 
-unsigned long long sma(unsigned long long base, unsigned long long exp, unsigned long long mod) {
-    unsigned long long res = 1;
+uint64_t sma(uint64_t base, uint64_t exp, uint64_t mod) {
+    uint64_t res = 1;
 
     while (exp > 1) {
         if (exp & 1) {
@@ -46,13 +48,13 @@ unsigned long long sma(unsigned long long base, unsigned long long exp, unsigned
 
 int main() {
 
-    unsigned long long base, exp, mod; // input
+    uint64_t base, exp, mod; // input
 
-    unsigned long long x; // output
+    uint64_t x; // output
 
     int input_counter; // number of input read
 
-    input_counter = scanf("%llu %llu %llu\n", &base, &exp, &mod); // reading
+    input_counter = scanf("%lu %lu %lu\n", &base, &exp, &mod); // reading
 
     if (input_counter != 3) {
         fprintf(
@@ -61,7 +63,7 @@ int main() {
     }
     x = sma(base, exp, mod); // Square-and-Multiply modular Exponentiation
 
-    printf("%llu\n", x);
+    printf("%lu\n", x);
 
     return 0;
 }

@@ -34,12 +34,13 @@ as seen on section 7.4 of Understanding Cryptography:
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
-unsigned long long fsma(unsigned long long base, unsigned long long exp, unsigned long long mod) {
-    unsigned long long res = 1;
+uint64_t fsma(uint64_t base, uint64_t exp, uint64_t mod) {
+    uint64_t res = 1;
 
     while (exp > 1) {
-        unsigned long long buf = res;
+        uint64_t buf = res;
 
         if (exp & 1) {
             res = (res * base) % mod;
@@ -58,13 +59,13 @@ unsigned long long fsma(unsigned long long base, unsigned long long exp, unsigne
 
 int main() {
 
-    unsigned long long base, exp, mod; // input
+    uint64_t base, exp, mod; // input
 
-    unsigned long long x; // output
+    uint64_t x; // output
 
     int input_counter; // number of input read
 
-    input_counter = scanf("%llu %llu %llu\n", &base, &exp, &mod); // reading
+    input_counter = scanf("%lu %lu %lu\n", &base, &exp, &mod); // reading
 
     if (input_counter != 3) {
         fprintf(
@@ -73,7 +74,7 @@ int main() {
     }
     x = fsma(base, exp, mod); // Square-and-Multiply modular Exponentiation
 
-    printf("%llu\n", x);
+    printf("%lu\n", x);
 
     return 0;
 }

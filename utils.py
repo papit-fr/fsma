@@ -6,7 +6,7 @@ logging.basicConfig(
     level=logging.INFO
 )
 # C type max values, https://zestedesavoir.com/tutoriels/755/le-langage-c-1/notions-avancees/les-limites-des-types/
-MAX_C_UNSIGNED_LONG = 4294967295
+MAX_C_UNSIGNED_LONG = 18446744073709551615
 # Test suite template
 BASE = 970397
 EXPONENT = 98725745
