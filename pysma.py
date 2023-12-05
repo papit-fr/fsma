@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 from numpy import array
 from scipy import stats
 
+# Colors and styling of the charts
 COLORS = [
     "#" + "".join([choice("0123456789ABCDEF") for j in range(6)]) for i in range(40)
 ]
@@ -14,6 +15,11 @@ CHART_FONT = dict(family="Courier New, monospace", size=18, color="#7f7f7f")
 
 
 def get_a_random_color():
+    """
+    Return a random hexadecimal color.
+
+       :return: The hexadecimal color code as a string.
+    """
     return COLORS[randint(0, len(COLORS) - 1)]
 
 
