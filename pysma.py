@@ -11,7 +11,8 @@ from scipy import stats
 COLORS = [
     "#" + "".join([choice("0123456789ABCDEF") for j in range(6)]) for i in range(40)
 ]
-CHART_FONT = dict(family="Courier New, monospace", size=18, color="#7f7f7f")
+# Same font family as Pandoc PDF
+CHART_FONT = dict(family="Latin Modern Roman", size=18, color="black")
 
 
 def get_a_random_color():
