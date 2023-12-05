@@ -3,8 +3,8 @@
 ## Abstract
 
 Modular exponentiation: (a^b) mod n can be computed using square and multiply
-exponentiation algorythm[^1].
-The present algorythm in this repository describes a faster variant stopping the
+exponentiation algorithm[^1].
+The present algorithm in this repository describes a faster variant stopping the
 computation when intermediary modulus is 0.
 
 ## Observations
@@ -33,7 +33,7 @@ of 2555 by 25 is the same as the modulus of 55 by 25.
 
 ### So can we compute only the smaller number modulus to be faster?
 
-Yes, using the square and multiply modular exponentiation algorythm and storing
+Yes, using the square and multiply modular exponentiation algorithm and storing
 the last modulus. If the current one is equal to 0, the computation can stop, and
 the algorithm can return the last modulus stored.
 
