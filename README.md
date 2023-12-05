@@ -153,4 +153,17 @@ with the number of square and multiply to compute.
 To measure those phenomenons, the C is not adapted. A more high-level language
 like Python with it data science tools is needed.
 
+#### Analysing the premature exit of the algorithm
+
+The frequency of the premature exit, i.e., intermediary remainder equal to 0 of
+the algorithm does not change why the base.
+But it changes with the exponent the modulus.
+The following graph shows the frequency of premature exit of the algorithm function of the base.
+
+![Frequency of premature exit function of the base](greater-base-chart.png)
+
+But the frequency of premature exit tend to zero with modulo getting greater.
+
+![Frequency of premature exit function of the modulo](greater-modulo-chart.png)
+
 [^1]: Christof Paar, Jan Pelzl, Understanding Cryptography, section 7.4
