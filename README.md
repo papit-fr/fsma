@@ -158,7 +158,7 @@ like Python with it data science tools is needed.
 The frequency of the premature exit, i.e., intermediary remainder equal to 0 of
 the algorithm does not change why the base.
 But it changes with the modulus.
-The following graph shows the frequency (linear regression to suppress variation du to sampling) of premature exit of the algorithm function of the base.
+The following graph shows the frequency (linear regression to suppress variations du to sampling) of premature exit of the algorithm function of the base.
 
 ![Frequency of premature exit function of the base](greater-base-chart.png)
 
