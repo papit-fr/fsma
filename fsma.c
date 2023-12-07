@@ -32,10 +32,46 @@ as seen on section 7.4 of Understanding Cryptography:
 		RETURN (r)
 
 */
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
 
+/*******************************************************************************
+ * Fast-Square-and-Multiply Algorithm (FSMA)
+ *
+ *
+ * Same as the SMA but store the temporary modular result in a buffer and return
+ * it if the next modular result is 0, after the first squared to manage case
+ * where the first result is zero.
+ *
+ * Return sooner surely means faster.
+ *
+ * as seen on section 7.4 of Understanding Cryptography:
+ *
+ * 	Square-and-Multiply for Modular Exponentiation
+ *
+ * 	Input:  base element x, Exponent h, Modulus n
+ * 	Output: y = xˆh mod n
+ * 	Initialization: r = x
+ *
+ * 	Algorithm:
+ * 		FORi=t−1DOWNTO0
+ *
+ * 			r = rˆ2 mod n
+ *
+ * 			IF hi = 1
+ * 				r = r * x mod n
+ *
+ * 		RETURN (r)
+ *
+ * @author Christophe Brun, PapIT SASU
+ * @date 2023-12-01
+ * @copyright PapIT SASU
+ * @see Understanding Cryptography, section 7.4
+ *
+ * @param base base element x
+ * @param exp Exponent h
+ * @param mod Modulus n
+ * @return y = xˆh mod n
+ */
 uint64_t fsma(uint64_t base, uint64_t exp, uint64_t mod) {
     uint64_t res = 1;
 
@@ -55,26 +91,4 @@ uint64_t fsma(uint64_t base, uint64_t exp, uint64_t mod) {
     }
 
     return (base * res) % mod;
-}
-
-int main() {
-
-    uint64_t base, exp, mod; // input
-
-    uint64_t x; // output
-
-    int input_counter; // number of input read
-
-    input_counter = scanf("%lu %lu %lu\n", &base, &exp, &mod); // reading
-
-    if (input_counter != 3) {
-        fprintf(
-                stderr, "Error: invalid input, must be 3, base, exponent and modulo\n");
-        exit(EXIT_FAILURE);
-    }
-    x = fsma(base, exp, mod); // Square-and-Multiply modular Exponentiation
-
-    printf("%lu\n", x);
-
-    return 0;
 }
