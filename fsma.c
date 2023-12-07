@@ -1,37 +1,4 @@
-/*
-Fast-Square-and-Multiply Algorithm (FSMA)
-
-Same as the SMA but store the temporary modular result in a buffer and return it
-if the next modular result is 0, after the first squared to manage case where the first
-result is zero.
-
-Return sooner surely means faster.
-
-@author:
-	Christophe Brun
-
-@copyright:
-	2023, PapIT SASU
-
-as seen on section 7.4 of Understanding Cryptography:
-
-	Square-and-Multiply for Modular Exponentiation
-
-	Input:  base element x, Exponent H, Modulus n
-	Output: y = xˆh mod n
-	Initialization: r = x
-
-	Algorithm:
-		FORi=t−1DOWNTO0
-
-			r = rˆ2 mod n
-
-			IF hi = 1
-				r = r * x mod n
-
-		RETURN (r)
-
-*/
+// Include and defines
 #include <stdint.h>
 
 /*******************************************************************************
