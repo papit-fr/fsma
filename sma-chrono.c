@@ -1,6 +1,5 @@
 // includes and defines
 #include <stdio.h>
-#include <stdlib.h>
 #include <time.h>
 #include "sma.h"
 #include "utils.h"
