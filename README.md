@@ -1,4 +1,4 @@
-# Fast square and multiply modular exponentiation (FSMMAE)
+# Fast square and multiply modular exponentiation (FSMMEA)
 
 ## Abstract
 
@@ -20,7 +20,7 @@ Both are 5.
 
 ![Why](question-mark-on-a-blank-background.png)
 
-#### Why?
+### Why?
 
 Because `2555 = 25 * 100 + 55` and modulus of `25 * 100 by 25 is 0`, so the modulus
 of 2555 by 25 is the same as the modulus of 55 by 25.
@@ -55,7 +55,7 @@ is [`pow` Python built-in method](https://docs.python.org/3/library/functions.ht
 
 ### Dependencies
 
-Compilation and tests need LLVM, cmake, Clang/cc/gcc or any compiler, Valgrind and Python3.
+Compilation and tests need LLVM, cmake, Clang/cc/gcc or any compiler, Valgrind and Python3 for tests and analysis.
 
 ### Compilation
 
@@ -69,16 +69,15 @@ $ make all
 
 ### Testing
 
-The tests are done using a number inferior to a C unsigned long integer, the
+The tests are done using a number inferior to a C unsigned 64-Bit integer, the
 type used in C programs, as base, exponent, and modulus. Running the
 corresponding Python module should end in return code 0 if the result is the
 same as the reference implementation `pow` otherwise an `assertionError` is raised.
 
-#### Test results
+### Test results
 
 Both `sma.c` and `fsma.c` compiled shared libraries returned results equal to
-the reference implementation `pow` for all the numbers inferior to a C unsigned
-long integer tested.
+the reference implementation `pow` for all the numbers inferior to a C unsigned 64-Bit integer tested.
 
 ## Hypothesis
 
@@ -86,11 +85,11 @@ The FSMMEA algorithm is generally faster than the SMA algorithm because of the c
 sooner in case a temporary modulus is equal to 0.
 The impact of storing the last modulus and comparing the current to 0 is negligible.
 
-### Performance analysis
+## Performance analysis
 
-#### Counting instructions using Valgrind
+### Counting instructions using Valgrind
 
-Has expected, comparing the temporary remainder to 0 has a cost. When no intermediate
+Has expected, comparing the temporary remainder to 0 has a cost in terms of instructions. When no intermediate
 remainder is 0, the computing function itself execute 20% more instructions.
 In this case the percentage is constant.
 
@@ -121,7 +120,7 @@ $ valgrind --tool=callgrind --toggle-collect=fsma ./fsma-prof <<<"97032574325492
 ```
 
 When there is an intermediary remainder equal to 0, the number of instructions
-is reduced by proportion that changes depending on the number of square and multiply
+is reduced by a proportion that changes depending on the number of square and multiply
 left to compute.
 Here above an example with an 82% decrease of the number of instructions executed.
 
@@ -147,18 +146,54 @@ $ valgrind --tool=callgrind --toggle-collect=fsma ./fsma-prof <<<"294 98725745 9
 ==1577460== I   refs:      84
 ```
 
-The proportion of instructions executed is not constant and the chance of having
+### Measuring time using `clock()`
+
+More instructions are required but instructions time cost can vary of several orders of magnitude.
+On an x86_64 Intel machine, the time cost of the comparison is negligible.
+The programs `sma-chrono` (classical implementation) and `fsma-chrono` (this implementation) are used to measure the
+time cost in seconds using `time.h` library `clock()` function.
+Both functions are executed 10 millions times to spread the possible time variations.
+The results when no intermediary remainder is equal to 0 are almost the same:
+
+```bash
+chrichri@chrichri-HKD-WXX:~/left-right-modulo$ ./fsma-chrono <<< "2945 98725745 98"
+59
+Time: 3.804948
+chrichri@chrichri-HKD-WXX:~/left-right-modulo$ ./sma-chrono <<< "2945 98725745 98"
+59
+Time: 3.835387
+```
+
+Quite often this new implementation is slightly faster than the classical one, but it is surely not relevant on a Linux
+desktop PC.
+
+When there is an intermediary remainder equal to 0, the time cost of the comparison is significant:
+
+```bash
+chrichri@chrichri-HKD-WXX:~/left-right-modulo$ ./fsma-chrono <<< "294 98725745 98"
+0
+Time: 0.048704
+chrichri@chrichri-HKD-WXX:~/left-right-modulo$ ./sma-chrono <<< "294 98725745 98"
+0
+Time: 3.754375
+```
+
+The new implement represent 1.3% of the time of the classical one, therefore the name of the algorithm is Fast Square
+and Multiply Modular Exponentiation Algorithm Modular Exponentiation...
+
+### Analysing the premature exit of the algorithm
+
+The proportion of instructions executed is not constant, nore the time, and the chance of having
 an intermediary remainder equal to 0 is not constant either. It surely increases
 with the number of square and multiply to compute.
 To measure those phenomenons, the C is not adapted. A more high-level language
-like Python with it data science tools is needed.
-
-#### Analysing the premature exit of the algorithm
+like Python with its data science tools is needed.
 
 The frequency of the premature exit, i.e., intermediary remainder equal to 0 of
 the algorithm does not change why the base.
 But it changes with the modulus.
-The following graph shows the frequency (linear regression to suppress variations du to sampling) of premature exit of the algorithm function of the base.
+The following graph shows the frequency (linear regression to suppress variations du to sampling) of premature exit of
+the algorithm function of the base.
 
 ![Frequency of premature exit function of the base](greater-base-chart.png)
 
