@@ -53,6 +53,33 @@ The fast square and multiply modular exponentiation is implemented in `fsma.c`.
 Again the reference implementation
 is [`pow` Python built-in method](https://docs.python.org/3/library/functions.html#pow).
 
+
+```C
+uint64_t fsma(uint64_t base, uint64_t exp, uint64_t mod) {
+    uint64_t res = 1;
+
+    while (exp > 1) {
+        // The buffer storing the last result
+        uint64_t buf = res;
+
+        // If the exponent digit is 1, then multiply
+        if (exp & 1) {
+            res = (res * base) % mod;
+
+            // If an intermediate result is zero, we can return the result
+            if (res == 0) {
+                return (base * buf) % mod;
+            }
+        }
+
+        // If the exponent digit is 0, then square
+        base = (base * base) % mod;
+        exp >>= 1;
+    }
+
+    return (base * res) % mod;
+}
+```
 ### Dependencies
 
 Compilation and tests need LLVM, cmake, Clang/cc/gcc or any compiler, cmake, Valgrind and Python3 for tests and
