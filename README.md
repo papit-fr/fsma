@@ -55,7 +55,8 @@ is [`pow` Python built-in method](https://docs.python.org/3/library/functions.ht
 
 ### Dependencies
 
-Compilation and tests need LLVM, cmake, Clang/cc/gcc or any compiler, Valgrind and Python3 for tests and analysis.
+Compilation and tests need LLVM, cmake, Clang/cc/gcc or any compiler, cmake, Valgrind and Python3 for tests and
+analysis.
 
 ### Compilation
 
@@ -149,17 +150,22 @@ $ valgrind --tool=callgrind --toggle-collect=fsma ./fsma-prof <<<"294 98725745 9
 ### Measuring time using `clock()`
 
 More instructions are required but instructions time cost can vary of several orders of magnitude.
-On an x86_64 Intel machine, the time cost of the comparison is negligible.
+On both x86_64 Intel and RISC-V 64 machines, the time cost of the comparison is negligible.
 The programs `sma-chrono` (classical implementation) and `fsma-chrono` (this implementation) are used to measure the
 time cost in seconds using `time.h` library `clock()` function.
 Both functions are executed 10 millions times to spread the possible time variations.
 The results when no intermediary remainder is equal to 0 are almost the same:
 
 ```bash
-chrichri@chrichri-HKD-WXX:~/left-right-modulo$ ./fsma-chrono <<< "2945 98725745 98"
+# Details of the x86_64 machine
+$ uname -a
+... 6.3.1-060301-generic ... SMP PREEMPT_DYNAMIC ... x86_64 GNU/Linux
+# Both programs are executed 10 millions times in the same time without
+# intermediary remainder equal to 0
+$ ./fsma-chrono <<< "2945 98725745 98"
 59
 Time: 3.804948
-chrichri@chrichri-HKD-WXX:~/left-right-modulo$ ./sma-chrono <<< "2945 98725745 98"
+$ ./sma-chrono <<< "2945 98725745 98"
 59
 Time: 3.835387
 ```
@@ -170,16 +176,54 @@ desktop PC.
 When there is an intermediary remainder equal to 0, the time cost of the comparison is significant:
 
 ```bash
-chrichri@chrichri-HKD-WXX:~/left-right-modulo$ ./fsma-chrono <<< "294 98725745 98"
+# Details of the x86_64 machine
+$ uname -a
+... 6.3.1-060301-generic ... SMP PREEMPT_DYNAMIC ... x86_64 GNU/Linux
+# Significant time difference when an intermediary remainder is
+# equal to 0
+$ ./fsma-chrono <<< "294 98725745 98"
 0
 Time: 0.048704
-chrichri@chrichri-HKD-WXX:~/left-right-modulo$ ./sma-chrono <<< "294 98725745 98"
+$ ./sma-chrono <<< "294 98725745 98"
 0
 Time: 3.754375
 ```
 
-The new implement represent 1.3% of the time of the classical one, therefore the name of the algorithm is Fast Square
+The new implement represent 1.3% on x86_64 of the time of the classical one, therefore the name of the algorithm
+is Fast Square
 and Multiply Modular Exponentiation Algorithm Modular Exponentiation...
+
+As expected the same computations highlight a slightly lower gain time on a less complex ISA like RISC-V.
+But still superior to ten folds :
+
+```bash
+# Details of the RISC-V 64 machine
+$ uname -a
+... 5.5.0-0.rc5.git0.1.1.riscv64.fc32.riscv64 #1 SMP ... riscv64 GNU/Linux
+# Both programs are executed 10 millions times in the same time without
+# intermediary remainder equal to 0
+$ ./fsma-chrono <<< "294 98725745 98"
+0
+Time: 0.494832
+$ ./sma-chrono <<< "294 98725745 98"
+0
+Time: 5.560980
+```
+
+Likewise, even on a more simple architecture like RISC-V the cost of comparing the remainder to zero is negligible :
+
+```bash
+# Details of the RISC-V 64 machine
+$ uname -a
+... 5.5.0-0.rc5.git0.1.1.riscv64.fc32.riscv64 #1 SMP ... riscv64 GNU/Linux
+# Significant time difference when an intermediary remainder is equal to 0
+$ ./fsma-chrono <<< "294 98725745 985"
+4
+Time: 5.264839
+$ ./sma-chrono <<< "294 98725745 985"
+4
+Time: 5.499803
+```
 
 ### Analysing the premature exit of the algorithm
 
