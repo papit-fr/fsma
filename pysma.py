@@ -26,7 +26,7 @@ def get_a_random_color():
 
 def sma(b, exp, m):
     """
-    Return a stored value when the temporary is 0.
+    Return the modulus of the square and multiply algorithm.
 
        :param b: The base
        :param exp: The exponent
@@ -44,7 +44,7 @@ def sma(b, exp, m):
 
 def fsma(b, exp, m):
     """
-    Return a stored value when the temporary is 0.
+    Return 0 value when the temporary is 0.
 
        :param b: The base
        :param exp: The exponent
@@ -53,11 +53,10 @@ def fsma(b, exp, m):
     """
     res = 1
     while exp > 1:
-        buf = res
         if exp & 1:
             res = (res * b) % m
             if res == 0:
-                return (b * buf) % m
+                return 0
         b = b ** 2 % m
         exp >>= 1
     return (b * res) % m
@@ -73,11 +72,10 @@ def count_fsma_exit(base, exp, m):
        :return: A integer representing the result of the modular exponentiation
     """
     count_exit = 0
-    count_all = 0
 
     def fsma(b, exp, m):
         """
-        Return a stored value when the temporary is 0.
+        Return 0 value when the temporary is 0.
 
            :param b: The base
            :param exp: The exponent
@@ -88,12 +86,11 @@ def count_fsma_exit(base, exp, m):
 
         res = 1
         while exp > 1:
-            buf = res
             if exp & 1:
                 res = (res * b) % m
                 if res == 0:
                     count_exit += 1
-                    return (b * buf) % m
+                    return 0
             b = b ** 2 % m
             exp >>= 1
         return (b * res) % m
@@ -118,7 +115,7 @@ def greater_base():
     base_fig = go.Figure()
     mod_fig = go.Figure()
     intercepts = []
-    mods = [3, 5, 9, 13, 25, 27, 29, 33, 40, 47, 54, 73, 81, 99, 109, 123, 134, 154]
+    mods = [3, 5, 9, 13, 25, 27, 29, 33, 40, 47, 54, 73, 81, 99, 109, 125, 134, 154, 243]
     for mod in mods:
         exp, freq, mod = compute_freq(mod=mod)
         x = array([x[0] for x in freq])
@@ -179,13 +176,16 @@ def compute_freq(starting_base=970, exp=254345856791354, mod=3):
     for base in range(starting_base, 97173):
         results.append((base, count_fsma_exit(base, exp, mod)))
     freq = []
-    buffer = 0
-    interval = 100
+    premature_exit = 0
+    all_exit = 0
+    step = 100
     for i, result in enumerate(results):
-        buffer += result[1]
-        if i % interval == 0:
-            freq.append((starting_base + i, (buffer / interval)))
-            buffer = 0
+        premature_exit += result[1]
+        all_exit += 1
+        if all_exit % step == 0 and all_exit > 0:
+            freq.append((starting_base + i, premature_exit / all_exit))
+            premature_exit = 0
+            all_exit = 0
     # Remove the first element
     freq.pop(0)
     # Turn the list to a tuple

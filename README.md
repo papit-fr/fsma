@@ -35,7 +35,8 @@ of 2555 by 25 is the same as the modulus of 55 by 25.
 
 Yes, using the square and multiply modular exponentiation algorithm and storing
 the last modulus. If the current one is equal to 0, the computation can stop, and
-the algorithm can return the last modulus stored.
+the algorithm can return 0. There is no point in multiplying or squaring
+(just a particular case of multiplying) again the modulus will be 0 anyway.
 
 ## Python implementation
 
@@ -59,16 +60,15 @@ uint64_t fsma(uint64_t base, uint64_t exp, uint64_t mod) {
     uint64_t res = 1;
 
     while (exp > 1) {
-        // The buffer storing the last result
-        uint64_t buf = res;
 
         // If the exponent digit is 1, then multiply
         if (exp & 1) {
             res = (res * base) % mod;
 
-            // If an intermediate result is zero, we can return the result
+            // If an intermediate result is zero, we can return 0.
+            // The result will be zero anyway
             if (res == 0) {
-                return (base * buf) % mod;
+                return 0;
             }
         }
 
@@ -117,11 +117,12 @@ The impact of storing the last modulus and comparing the current to 0 is negligi
 
 ### Counting instructions using Valgrind
 
+The binaries are compiled Clang 15.0.7 for target x86_64-pc-linux-gnu with `-pg` option
 Has expected, comparing the temporary remainder to 0 has a cost in terms of instructions. When no intermediate
-remainder is 0, the computing function itself execute 20% more instructions.
+remainder is 0, the computing function itself execute 10.5% more instructions.
 In this case the percentage is constant.
 
-The classic implementation counts 567 instructions:
+The classic implementation counts 723 instructions:
 
 ```bash
 $ valgrind --tool=callgrind --toggle-collect=sma ./sma-prof <<<"97032574325492 4294965003 3536"
@@ -134,44 +135,44 @@ $ valgrind --tool=callgrind --toggle-collect=sma ./sma-prof <<<"97032574325492 4
 1040
 ==1559769== 
 ==1559769== Events    : Ir
-==1559769== Collected : 567
+==1559769== Collected : 723
 ==1559769== 
-==1559769== I   refs:      567
+==1559769== I   refs:      723
 ```
 
-The currently described implementation counts 679 instructions:
+The currently described implementation counts 799 instructions:
 
 ```bash
 $ valgrind --tool=callgrind --toggle-collect=fsma ./fsma-prof <<<"97032574325492 4294965003 3536"
 ...
-==1559866== I   refs:      679
+==1559866== I   refs:      799
 ```
 
 When there is an intermediary remainder equal to 0, the number of instructions
 is reduced by a proportion that changes depending on the number of square and multiply
 left to compute.
-Here above an example with an 82% decrease of the number of instructions executed.
+Here above an example with a 85% decrease of the number of instructions executed.
 
-The classical implementation counts 457 instructions:
+The classical implementation counts 583 instructions:
 
 ```bash
 $ valgrind --tool=callgrind --toggle-collect=sma ./sma-prof <<<"294 98725745 98"
 ...
 ==1577575== Events    : Ir
-==1577575== Collected : 457
+==1577575== Collected : 583
 ==1577575== 
-==1577575== I   refs:      457
+==1577575== I   refs:      583
 ```
 
-The currently described implementation counts 84 instructions:
+The currently described implementation counts 86 instructions:
 
 ```bash
 $ valgrind --tool=callgrind --toggle-collect=fsma ./fsma-prof <<<"294 98725745 98"
 ...
 ==1577460== Events    : Ir
-==1577460== Collected : 84
+==1577460== Collected : 86
 ==1577460== 
-==1577460== I   refs:      84
+==1577460== I   refs:      86
 ```
 
 ### Measuring time using `clock()`
@@ -191,10 +192,10 @@ $ uname -a
 # intermediary remainder equal to 0
 $ ./fsma-chrono <<< "2945 98725745 98"
 59
-Time: 3.804948
+Time: 3.793387
 $ ./sma-chrono <<< "2945 98725745 98"
 59
-Time: 3.835387
+Time: 3.862384
 ```
 
 Quite often this new implementation is slightly faster than the classical one, but it is surely not relevant on a Linux
@@ -210,13 +211,14 @@ $ uname -a
 # equal to 0
 $ ./fsma-chrono <<< "294 98725745 98"
 0
-Time: 0.048704
+Time: 0.044720
 $ ./sma-chrono <<< "294 98725745 98"
 0
-Time: 3.754375
+Time: 3.798237
+
 ```
 
-The new implement represent 1.3% on x86_64 of the time of the classical one, therefore the name of the algorithm
+The new implement represent ~1.1% on x86_64 of the time of the classical one, therefore the name of the algorithm
 is Fast Square
 and Multiply Modular Exponentiation Algorithm Modular Exponentiation...
 
@@ -268,7 +270,7 @@ the algorithm function of the base.
 
 ![Frequency of premature exit function of the base](greater-base-chart.png)
 
-But the frequency of premature exit tend to zero with the modulo getting greater.
+But the frequency of premature exit tend to diminish with the modulo getting greater.
 
 ![Frequency of premature exit function of the modulo](greater-modulo-chart.png)
 
