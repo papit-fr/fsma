@@ -33,10 +33,10 @@ of 2555 by 25 is the same as the modulus of 55 by 25.
 
 ### So can we compute only the smaller number modulus to be faster?
 
-Yes, using the square and multiply modular exponentiation algorithm and storing
-the last modulus. If the current one is equal to 0, the computation can stop, and
-the algorithm can return 0. There is no point in multiplying or squaring
-(just a particular case of multiplying) again the modulus will be 0 anyway.
+Yes, using the square and multiply modular exponentiation algorithm, if the current
+one is equal to 0, the computation can stop, and the algorithm can return 0. There
+is no point in multiplying or squaring (just a particular multiplication) again,
+the modulus will be 0 anyway.
 
 ## Python implementation
 
@@ -53,7 +53,6 @@ The classic square and multiply modular exponentiation is implemented in `sma.c`
 The fast square and multiply modular exponentiation is implemented in `fsma.c`.
 Again the reference implementation
 is [`pow` Python built-in method](https://docs.python.org/3/library/functions.html#pow).
-
 
 ```C
 uint64_t fsma(uint64_t base, uint64_t exp, uint64_t mod) {
@@ -80,6 +79,7 @@ uint64_t fsma(uint64_t base, uint64_t exp, uint64_t mod) {
     return (base * res) % mod;
 }
 ```
+
 ### Dependencies
 
 Compilation and tests need LLVM, cmake, Clang/cc/gcc or any compiler, cmake, Valgrind and Python3 for tests and
@@ -111,13 +111,13 @@ the reference implementation `pow` for all the numbers inferior to a C unsigned 
 
 The FSMMEA algorithm is generally faster than the SMA algorithm because of the computation ending
 sooner in case a temporary modulus is equal to 0.
-The impact of storing the last modulus and comparing the current to 0 is negligible.
+The impact of comparing the intermediary modulus to 0 is negligible.
 
 ## Performance analysis
 
 ### Counting instructions using Valgrind
 
-The binaries are compiled Clang 15.0.7 for target x86_64-pc-linux-gnu with `-pg` option
+The binaries are compiled Clang 15.0.7 for target x86_64-pc-linux-gnu with `-pg -DNDEBUG` options
 Has expected, comparing the temporary remainder to 0 has a cost in terms of instructions. When no intermediate
 remainder is 0, the computing function itself execute 10.5% more instructions.
 In this case the percentage is constant.
@@ -198,8 +198,8 @@ $ ./sma-chrono <<< "2945 98725745 98"
 Time: 3.862384
 ```
 
-Quite often this new implementation is slightly faster than the classical one, but it is surely not relevant on a Linux
-desktop PC.
+Quite often this new implementation is slightly faster than the classical one, on both platforms under test.
+But it is surely not relevant on a Linux desktop PC.
 
 When there is an intermediary remainder equal to 0, the time cost of the comparison is significant:
 
@@ -215,7 +215,6 @@ Time: 0.044720
 $ ./sma-chrono <<< "294 98725745 98"
 0
 Time: 3.798237
-
 ```
 
 The new implement represent ~1.1% on x86_64 of the time of the classical one, therefore the name of the algorithm
@@ -223,6 +222,7 @@ is Fast Square
 and Multiply Modular Exponentiation Algorithm Modular Exponentiation...
 
 As expected the same computations highlight a slightly lower gain time on a less complex ISA like RISC-V.
+The binaries were compiled for target riscv64-redhat-linux GCC 12.1.1.
 But still superior to ten folds :
 
 ```bash
@@ -233,13 +233,14 @@ $ uname -a
 # intermediary remainder equal to 0
 $ ./fsma-chrono <<< "294 98725745 98"
 0
-Time: 0.494832
+Time: 0.472115
 $ ./sma-chrono <<< "294 98725745 98"
 0
-Time: 5.560980
+Time: 5.238649
 ```
 
-Likewise, even on a more simple architecture like RISC-V the cost of comparing the remainder to zero is negligible :
+Likewise, even on a more simple architecture like RISC-V, the cost of comparing
+the remainder to zero is negligible :
 
 ```bash
 # Details of the RISC-V 64 machine
@@ -248,10 +249,10 @@ $ uname -a
 # Significant time difference when an intermediary remainder is equal to 0
 $ ./fsma-chrono <<< "294 98725745 985"
 4
-Time: 5.264839
-$ ./sma-chrono <<< "294 98725745 985"
+Time: 5.322550
+[root@fedora-riscv fsma]# ./sma-chrono <<< "294 98725745 985"
 4
-Time: 5.499803
+Time: 5.346250
 ```
 
 ### Analysing the premature exit of the algorithm
@@ -263,7 +264,7 @@ To measure those phenomenons, the C is not adapted. A more high-level language
 like Python with its data science tools is needed.
 
 The frequency of the premature exit, i.e., intermediary remainder equal to 0 of
-the algorithm does not change why the base.
+the algorithm does not change with the base.
 But it changes with the modulus.
 The following graph shows the frequency (linear regression to suppress variations du to sampling) of premature exit of
 the algorithm function of the base.
