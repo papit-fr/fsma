@@ -1,4 +1,4 @@
-# Fast square and multiply modular exponentiation (FSMMEA)
+# Fast square and multiply modular exponentiation (FSMMEA), [Christophe Brun](mailto:christophe.brun@papit.fr), [PapIT SASU](https://papit.fr/)
 
 ## Abstract
 
